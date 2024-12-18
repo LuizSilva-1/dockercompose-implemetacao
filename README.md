@@ -1,18 +1,43 @@
-# Desafio: Implementação de Estrutura com Docker Compose
+# Guess Game - Docker Compose Implementation
 
-Este desafio tem como objetivo aplicar os conhecimentos adquiridos no curso de **Containers e Orquestração**, ministrado pela **Pós-graduação da PUC Minas**. A proposta é implementar o **Guess Game**, uma aplicação simples composta por um backend desenvolvido em Flask, um frontend em React e um banco de dados PostgreSQL. A aplicação será orquestrada utilizando **Docker Compose**, e contará com o **NGINX** configurado como proxy reverso e balanceador de carga.
+## Introdução
+
+Este projeto é parte do desafio da pós-graduação da **PUC Minas**, no curso de **Containers e Orquestração**. O objetivo é implementar uma aplicação chamada **Guess Game**, utilizando uma arquitetura de micro serviços baseada em **Docker Compose**. A aplicação é composta por:
+
+- **Frontend**: Criado com React.
+- **Backend**: Desenvolvido em Flask.
+- **Banco de Dados**: Utilizando PostgreSQL.
+- **NGINX**: Configurado como proxy reverso e balanceador de carga.
+
+---
+
+## Opções de Design Adotadas
+
+Este projeto foi desenvolvido com as seguintes escolhas de design para garantir escalabilidade, organização e facilidade de manutenção:
+
+### **Serviços**
+- Divididos em três componentes principais: frontend (React), backend (Flask) e banco de dados (PostgreSQL).  
+  Essa separação facilita a escalabilidade e o isolamento das funcionalidades.
+
+### **Volumes**
+- Utilizados para persistir dados importantes, como os dados do PostgreSQL, mesmo após a parada ou reinicialização dos contêineres.
+
+### **Redes**
+- Configuradas no Docker Compose para permitir a comunicação eficiente e segura entre os serviços, sem expô-los externamente desnecessariamente.
+
+### **Estratégia de Balanceamento de Carga**
+- O NGINX foi configurado como proxy reverso e balanceador de carga, distribuindo as requisições de maneira uniforme entre os serviços backend, aumentando a resiliência e eficiência.
 
 ---
 
 ## Sobre a Aplicação
 
-O desafio utiliza como base o jogo demo disponível em [https://github.com/fams/guess_game](https://github.com/fams/guess_game). Todos os créditos pela aplicação original são destinados ao criador do projeto. A implementação foca na criação e configuração da infraestrutura com Docker Compose, abrangendo os seguintes serviços:
+A aplicação implementa o jogo **Guess Game**, no qual os usuários tentam adivinhar números gerados aleatoriamente. As funcionalidades estão organizadas nos seguintes componentes:
 
-1. **PostgreSQL (db):** Banco de dados relacional para armazenar os dados do jogo. Será utilizada a imagem `postgres:14` disponível no Docker Hub.
-2. **Backend + NGINX:** 
-   - O backend será responsável por gerenciar a lógica do jogo e as tomadas de decisão.
-   - O NGINX será configurado para organizar o tráfego entre o frontend e o backend, garantindo eficiência e evitando sobrecargas.
-3. **Frontend:** A interface gráfica principal será construída com React, proporcionando uma experiência interativa para os usuários.
+- **Frontend**: Exibe a interface gráfica para os jogadores.
+- **Backend**: Processa a lógica do jogo e gerencia as interações entre o frontend e o banco de dados.
+- **Banco de Dados**: Utilizado para armazenar os dados persistentes do jogo, como tentativas e resultados.
+
 
 ---
 
@@ -30,16 +55,21 @@ O desafio utiliza como base o jogo demo disponível em [https://github.com/fams/
 ├── requirements.txt      # Dependências do backend Flask
 ├── run.py                # Arquivo principal do backend Flask
 └── tests/                # Testes unitários
+
 ```
 ---
 
 ## Configurações dos Arquivos
 
+Nesta seção, são detalhados os principais arquivos usados no projeto e suas funções.
+
 ### 1. `docker-compose.yml`
 
-Este arquivo define como os containers serão configurados e gerenciados. Ele especifica os serviços (backend, frontend e banco de dados), suas redes, volumes e dependências. 
+O arquivo `docker-compose.yml` gerencia todos os serviços, definindo como eles se conectam e suas configurações específicas.
 
 **OBS: Foi necessário adicionar um healthcheck para que a aplicação não envie informações para o banco antes de ele estar pronto.**
+
+
 
 **Conteúdo:**
 ```yaml
@@ -99,7 +129,8 @@ volumes:
 ```
 ## Configuração do NGINX
 
-O arquivo **`nginx/nginx.conf`** é responsável por configurar o NGINX como **proxy reverso** e realizar as seguintes funções:
+
+O arquivo **nginx/nginx.conf**** configura o NGINX como proxy reverso para gerenciar o tráfego entre os serviços e balancear as requisições para o backend.
 
 - **Balanceamento de carga**: Distribui o tráfego entre os serviços do backend.
 - **Redirecionamento de tráfego**: Encaminha as requisições para as APIs do backend.
@@ -208,48 +239,49 @@ Certifique-se de que os seguintes programas estão instalados na sua máquina:
 
 ---
 
-### Passos
+### Passos para Executar
 
 1. **Clone o Repositório**
+   ```bash
+   git clone git@github.com:LuizSilva-1/dockercompose-implemetacao.git
+   cd dockercompose-implemetacao
+    ```
 
-Para obter o código-fonte do projeto, execute os seguintes comandos:
-
-```bash
-git clone git@github.com:LuizSilva-1/dockercompose-implemetacao.git
-cd dockercompose-implemetacao
-```
-
-2. **Suba os Containers**
-
-Utilize o **Docker Compose** para construir e inicializar todos os serviços necessários:
-
-```bash
-docker-compose up --build
-```
+2. **Construa e Suba os Containers**
+    ```bash
+      docker-compose up --build
+    ```
 
 3. **Acesse a Aplicação**
 
 
-Após iniciar os containers, acesse a aplicação no navegador através do seguinte endereço:
+      Após iniciar os containers, acesse a aplicação no navegador através do seguinte endereço:
 
 - **Frontend e Backend:** 
 
-```plaintext 
-http://localhost:80
-```
+  ```plaintext 
+  http://localhost:80
+  ```
+## Tecnologias Utilizadas
+
+- **NGINX**: Proxy reverso e balanceador de carga para gerenciar o tráfego entre os serviços.
+- **Flask**: Framework utilizado no backend para lógica de negócios e integração com o banco de dados.
+- **React**: Biblioteca frontend para criar uma interface interativa.
+- **PostgreSQL**: Banco de dados relacional para armazenar dados persistentes.
+- **Docker Compose**: Para orquestrar todos os serviços do projeto.
+
+
+## Créditos
+
+O jogo original foi baseado no projeto [Guess Game](https://github.com/fams/guess_game).  
+Todos os créditos pela ideia e implementação inicial são devidos ao criador do repositório.
+
+
 
 ## Observações Finais
 
-Este desafio visa demonstrar o domínio sobre:
+Este projeto foi desenvolvido como parte do curso de **Containers e Orquestração**, com foco em:
 
-### Criação e Orquestração de Containers:
-- Uso do **Docker Compose** para orquestrar um ambiente com backend, frontend e banco de dados.
-
-### Configuração Completa do Ambiente:
-- **Backend**: Desenvolvido em **Flask**.
-- **Frontend**: Construído em **React**.
-- **Banco de Dados**: Utiliza **PostgreSQL**.
-
-### Utilização do NGINX:
-- Configurado como **proxy reverso** para gerenciar o tráfego entre o frontend e o backend.
-- Implementação de **balanceamento de carga** para distribuir as requisições de forma eficiente.
+- Configuração de serviços usando **Docker Compose**.
+- Criação de infraestrutura escalável e resiliente.
+- Integração de serviços independentes para formar uma aplicação completa.
